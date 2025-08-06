@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # PHP Laravel Service
+  laravel-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ninehub-laravel-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./apps/project-ninehub:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - ninehub-network
+
+  # Next.js Service
+  nextjs-app:
+    build:
+      context: ./apps/ninehub-saas-nextjs
+      dockerfile: Dockerfile
+    container_name: ninehub-nextjs-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/ninehub-saas-nextjs:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - ninehub-network
+
+  # Vue.js Service
+  vue-app:
+    build:
+      context: ./apps/vue-crm-ninehub
+      dockerfile: Dockerfile
+    container_name: ninehub-vue-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./apps/vue-crm-ninehub:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - ninehub-network
+
+  # React Service
+  react-app:
+    build:
+      context: ./apps/reactjs-chatbot
+      dockerfile: Dockerfile
+    container_name: ninehub-react-app
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./apps/reactjs-chatbot:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - ninehub-network
+
+  # Nginx Reverse Proxy Service
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: ninehub-nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - laravel-app
+      - nextjs-app
+      - vue-app
+      - react-app
+    networks:
+      - ninehub-network
+
+  # MySQL Service
+  db:
+    image: mysql:8.0
+    container_name: ninehub-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ninehub_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: secret
+      MYSQL_USER: ninehub_user
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - ninehub-network
+
+  # Redis Service
+  redis:
+    image: redis:alpine
+    container_name: ninehub-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - ninehub-network
+
+networks:
+  ninehub-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local 
