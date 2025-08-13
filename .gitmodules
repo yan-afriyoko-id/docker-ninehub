@@ -1,12 +1,12 @@
 [submodule "apps/ninehub-saas-nextjs"]
 	path = apps/ninehub-saas-nextjs
-	url = git@github-yanafriyoko.com:yan-afriyoko-id/ninehub-saas-nextjs.git
+	url = git@github.com:yan-afriyoko-id/ninehub-saas-nextjs.git
 [submodule "apps/reactjs-chatbot"]
 	path = apps/reactjs-chatbot
-	url = git@github-yanafriyoko.com:yan-afriyoko-id/reactjs-chatbot.git
+	url = git@github.com:yan-afriyoko-id/reactjs-chatbot.git
 [submodule "apps/vue-crm-ninehub"]
 	path = apps/vue-crm-ninehub
-	url = git@github-yanafriyoko.com:yan-afriyoko-id/vue-crm-ninehub.git
+	url = git@github.com:yan-afriyoko-id/vue-crm-ninehub.git
 [submodule "apps/project-ninehub"]
 	path = apps/project-ninehub
-	url = git@github-yanafriyoko.com:yan-afriyoko-id/project-ninehub.git
+	url = git@github.com:yan-afriyoko-id/project-ninehub.git
